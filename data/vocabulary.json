@@ -1,0 +1,15 @@
+[
+  {"e": "🐄", "w": "Ongombe", "t": "cow", "c": "Animals"},
+  {"e": "🐕", "w": "Ombwa", "t": "dog", "c": "Animals"},
+  {"e": "🐖", "w": "Ongulu", "t": "pig", "c": "Animals"},
+  {"e": "💧", "w": "Omeya", "t": "water", "c": "Nature"},
+  {"e": "☀️", "w": "Etango", "t": "sun", "c": "Nature"},
+  {"e": "🌙", "w": "Omwedi", "t": "moon", "c": "Nature"},
+  {"e": "🔥", "w": "Omulilo", "t": "fire", "c": "Nature"},
+  {"e": "🧑", "w": "Omuntu", "t": "person", "c": "World"},
+  {"e": "🌳", "w": "Omuti", "t": "tree", "c": "World"},
+  {"e": "🏠", "w": "Ondjuwo", "t": "house", "c": "World"},
+  {"e": "🌅", "w": "Wa lalapo", "t": "good morning", "c": "Greetings"},
+  {"e": "👍", "w": "Nawa", "t": "good / fine", "c": "Greetings"},
+  {"e": "🙏", "w": "Tangi", "t": "thank you", "c": "Greetings"}
+]

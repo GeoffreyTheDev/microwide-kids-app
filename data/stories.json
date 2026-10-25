@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "title": "Ndapanda's Walk",
+    "cover": "page1.jpg",
+    "pages": [
+      { "kwy": "Wa lalapo! Ndapanda okakadona ka hafa. Etango oli li nawa.", "eng": "Good morning! Ndapanda is a happy girl. The sun is shining.", "img": "page1.jpg" },
+      { "kwy": "Ota ende nombwa yaye komuti munene.", "eng": "She walks with her dog to the big tree.", "img": "page2.jpg" },
+      { "kwy": "Otave nu omeya. Tangi kEshito!", "eng": "They drink water and rest. Thank you, nature!", "img": "page3.jpg" }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "The Thirsty Elephant",
+    "cover": "elephant1.jpg",
+    "pages": [
+      { "kwy": "Ondjamba inene otai ende mombuwa.", "eng": "The big elephant is walking in the desert.", "img": "elephant1.jpg" },
+      { "kwy": "Oya pumbwa omeya manene.", "eng": "He needs a lot of water.", "img": "elephant1.jpg" },
+      { "kwy": "Oye a mona omeya menono. Ohafi unene!", "eng": "He found water in the mud. He is very happy!", "img": "elephant2.jpg" },
+      { "kwy": "Ondjamba otai danauka momeya.", "eng": "The elephant plays in the water.", "img": "elephant2.jpg" }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "The Fast Cheetah",
+    "cover": "cheetah1.jpg",
+    "pages": [
+      { "kwy": "Etotono oli li onyamakuti i na evelo.", "eng": "The cheetah is a very fast animal.", "img": "cheetah1.jpg" },
+      { "kwy": "Otai tondoka moixwa.", "eng": "She runs through the bushes.", "img": "cheetah1.jpg" },
+      { "kwy": "Oya fuda po momudile womuti.", "eng": "She rests in the shade of the tree.", "img": "cheetah2.jpg" },
+      { "kwy": "Nena otai ka kofa nawa.", "eng": "Now she will sleep well.", "img": "cheetah2.jpg" }
+    ]
+  }
+]

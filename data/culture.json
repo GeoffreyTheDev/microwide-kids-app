@@ -1,0 +1,38 @@
+{
+  "ages_3_to_5": {
+    "animals": [
+      {
+        "name": "Oryx / Gemsbok",
+        "focus": "Recognise long horns and contrasting facial markings."
+      },
+      {
+        "name": "Cape fur seal",
+        "focus": "Compare flippers with feet."
+      }
+    ],
+    "places": [
+      {
+        "name": "Namib Desert and Namib Sand Sea",
+        "focus": "Make sand patterns and ask: 'Where might a tiny animal hide?'"
+      }
+    ]
+  },
+  "ages_6_to_10": {
+    "animals": [
+      {
+        "name": "Oryx / Gemsbok",
+        "focus": "Explore how animals live in dry environments."
+      },
+      {
+        "name": "Cape fur seal",
+        "focus": "Connect ocean food sources with life in a coastal colony."
+      }
+    ],
+    "places": [
+      {
+        "name": "Namib Desert and Namib Sand Sea",
+        "focus": "A desert contains living things. Wind shapes dunes, and coastal fog supplies moisture to specialised desert life."
+      }
+    ]
+  }
+}

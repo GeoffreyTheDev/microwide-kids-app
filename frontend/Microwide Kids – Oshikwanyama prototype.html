@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Microwide Kids – Oshikwanyama</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--sky:#8fd9ff;--grass:#4fc65a;--sun:#ffd23f;--pink:#ff6fa5;--blue:#2f6bff;--green:#27a844;--ink:#2b2350;--card:#fff;--bg:#fff8e8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:#2b2350;font-family:'Fredoka','Comic Sans MS',system-ui,sans-serif;color:var(--ink)}
+#app{position:relative;max-width:430px;height:100%;margin:0 auto;background:var(--bg);overflow:hidden}
+.screen{position:absolute;inset:0;display:none;flex-direction:column;overflow-y:auto}
+.screen.on{display:flex}
+button{font-family:inherit;cursor:pointer;border:0;color:inherit}
+:focus-visible{outline:4px solid var(--blue);outline-offset:2px}
+.btn{background:var(--green);color:#fff;font-size:22px;font-weight:700;padding:14px 28px;border-radius:22px;box-shadow:0 6px 0 #1b7a30}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 #1b7a30}
+.btn.alt{background:var(--blue);box-shadow:0 6px 0 #1c45b3}
+.btn:disabled{background:#bbb;box-shadow:0 6px 0 #888}
+/* landing */
+#land{background:linear-gradient(#8fd9ff 0%,#d6f3ff 55%,#4fc65a 55%,#3aa94a 100%);align-items:center;text-align:center}
+.sun{position:absolute;top:24px;right:24px;font-size:64px;animation:spin 30s linear infinite}
+.cloud{position:absolute;font-size:60px;animation:drift 20s linear infinite}
+.logo{margin-top:70px;font-size:40px;font-weight:700;color:#fff;text-shadow:0 4px 0 var(--blue),0 8px 0 rgba(0,0,0,.15);line-height:1}
+.tag{font-size:18px;color:var(--ink);background:#ffffffcc;padding:6px 16px;border-radius:20px;margin-top:14px}
+.run{position:absolute;bottom:14%;left:0;font-size:46px;white-space:nowrap;animation:run 9s linear infinite}
+.run.b{bottom:8%;animation-duration:12s;animation-delay:-5s;font-size:40px}
+.run.c{bottom:20%;animation-duration:15s;animation-delay:-9s;font-size:36px}
+.flower{position:absolute;bottom:3%;font-size:30px}
+.big{position:absolute;top:44%;left:50%;transform:translateX(-50%);font-size:34px;font-weight:700;padding:22px 34px;border-radius:50px;background:radial-gradient(circle at 30% 30%,#ff9ac0,#ff4f8f);color:#fff;box-shadow:0 8px 0 #c42a69;animation:pulse 1.4s ease-in-out infinite;z-index:3}
+.big:active{transform:translateX(-50%) scale(.95)}
+@keyframes pulse{0%,100%{transform:translateX(-50%) scale(1);box-shadow:0 8px 0 #c42a69,0 0 0 0 #ff6fa588}50%{transform:translateX(-50%) scale(1.1);box-shadow:0 8px 0 #c42a69,0 0 0 24px #ff6fa500}}
+@keyframes run{0%{transform:translateX(-80px)}100%{transform:translateX(450px)}}
+@keyframes drift{0%{transform:translateX(-90px)}100%{transform:translateX(450px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.run span{display:inline-block;animation:bob .5s ease-in-out infinite}
+/* onboarding */
+.pad{padding:20px}
+h2{font-size:28px;margin:6px 0 10px}
+input[type=text]{width:100%;font:600 24px Fredoka;padding:14px 18px;border-radius:20px;border:4px solid #cfd8ff;background:#fff;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{background:#fff;border:4px solid #cfd8ff;border-radius:20px;padding:10px 18px;font-size:22px;font-weight:600;color:var(--ink)}
+.chip.sel{background:var(--sun);border-color:#e0a800;transform:scale(1.06)}
+.gender{display:flex;gap:14px}
+.gender .chip{flex:1;font-size:60px;padding:8px;text-align:center}
+.gender small{display:block;font-size:18px}
+.lv{display:flex;flex-direction:column;gap:10px}
+.lv .chip{text-align:left}
+.hg{font-size:90px;animation:flip 1.6s ease-in-out infinite;display:inline-block}
+@keyframes flip{0%{transform:rotate(0)}60%,100%{transform:rotate(360deg)}}
+/* home */
+.top{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#fff;box-shadow:0 3px 0 #eee;position:sticky;top:0;z-index:5;gap:6px}
+.pill{font-weight:700;font-size:18px;background:#fff3c4;border-radius:16px;padding:6px 10px;border:0}
+.gm{background:var(--pink);color:#fff;font-weight:700;font-size:20px;padding:8px 14px;border-radius:16px;box-shadow:0 4px 0 #c42a69}
+.lang{font-size:26px;background:#e5eeff;border-radius:14px;padding:4px 8px}
+.unit{margin:14px;padding:14px;border-radius:22px;background:var(--blue);color:#fff}
+.unit b{font-size:22px}
+.path{display:flex;flex-direction:column;align-items:center;gap:16px;padding:10px 0 110px}
+.node{width:86px;height:86px;border-radius:50%;font-size:38px;background:var(--sun);box-shadow:0 8px 0 #d6a500;position:relative}
+.node.lock{background:#d8d8e0;box-shadow:0 8px 0 #aaa;filter:grayscale(1)}
+.node.done{background:var(--green);box-shadow:0 8px 0 #1b7a30}
+.node small{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:14px;font-weight:600;white-space:nowrap;color:var(--ink)}
+.node.cur{animation:pulse2 1.2s infinite}
+@keyframes pulse2{50%{transform:scale(1.1)}}
+.nav{position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:#fff;padding:8px 6px calc(8px + env(safe-area-inset-bottom,0px));box-shadow:0 -3px 0 #eee;z-index:6}
+.nav button{background:none;font-size:30px;padding:6px 14px;border-radius:16px}
+.nav button.on{background:#e5eeff}
+.menu{position:absolute;bottom:72px;right:10px;background:#fff;border-radius:18px;box-shadow:0 6px 24px #0003;padding:8px;display:none;z-index:7}
+.menu.on{display:block}
+.menu button{display:block;width:100%;text-align:left;background:none;font-size:20px;font-weight:600;padding:10px 14px;border-radius:12px}
+.menu button:hover{background:#eef3ff}
+/* lessons */
+.bar{height:16px;background:#e3e3ee;border-radius:10px;flex:1;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
+.q{font-size:26px;font-weight:700;text-align:center;margin:16px 0}
+.word{font-size:44px;font-weight:700;color:var(--blue);text-align:center}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.opt{background:#fff;border:4px solid #cfd8ff;border-radius:20px;padding:14px 8px;font-size:22px;font-weight:600;color:var(--ink)}
+.opt .e{display:block;font-size:48px}
+.opt.ok{background:#c9f5d0;border-color:var(--green)}
+.opt.no{background:#ffd3d9;border-color:#e0334d;animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.fb{text-align:center;font-size:24px;font-weight:700;min-height:36px;margin-top:14px}
+.listen{background:var(--sun);border-radius:50%;width:64px;height:64px;font-size:30px;display:block;margin:10px auto;box-shadow:0 5px 0 #d6a500}
+.row{display:flex;align-items:center;gap:10px}
+.x{background:none;font-size:26px}
+/* hubs */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0 18px 20px}
+.tile{border-radius:26px;padding:22px 8px;font-size:22px;font-weight:700;color:#fff;box-shadow:0 7px 0 #0003}
+.tile span{display:block;font-size:52px}
+.card{background:#fff;border-radius:20px;padding:14px;margin:8px 16px;box-shadow:0 4px 0 #eee}
+.lg{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:16px;background:#fff;margin:6px 16px;font-weight:600;font-size:20px}
+.lg.me{background:#fff3c4;border:3px solid var(--sun)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px}
+.mc{aspect-ratio:1;background:var(--blue);color:#fff;font-size:40px;border-radius:18px}
+.mc.up{background:#fff;color:var(--ink);font-size:15px;font-weight:700;border:3px solid var(--blue)}
+.mc.gone{visibility:hidden}
+canvas{background:#fff;border-radius:20px;border:4px solid #cfd8ff;touch-action:none;width:100%}
+.letters button{font-size:28px;font-weight:700;background:var(--sun);border-radius:14px;padding:8px 14px;margin:4px;box-shadow:0 4px 0 #d6a500}
+.toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:#2b2350;color:#fff;padding:10px 18px;border-radius:18px;font-size:17px;z-index:20;opacity:0;transition:.3s;pointer-events:none;text-align:center;width:max-content;max-width:90%}
+.toast.on{opacity:1}
+.note{font-size:14px;color:#6b6790;text-align:center;padding:6px 20px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head><body>
+<div id="app">
+
+<!-- LANDING -->
+<section class="screen on" id="land">
+ <div class="sun">☀️</div><div class="cloud" style="top:90px">☁️</div><div class="cloud" style="top:150px;animation-delay:-10s;font-size:44px">☁️</div>
+ <div class="logo">Microwide<br>Kids</div>
+ <div class="tag">Our African languages. Our stories.</div>
+ <button class="big" id="go">Oshikwanyama</button>
+ <div class="run c"><span>🦋</span> <span style="animation-delay:.2s">🧒🏾</span> <span style="animation-delay:.1s">🐕</span></div>
+ <div class="run"><span>👧🏿</span> <span style="animation-delay:.15s">🧒🏽</span> <span style="animation-delay:.3s">👦🏾</span></div>
+ <div class="run b"><span>🖍️</span><span style="animation-delay:.2s">👧🏾</span> <span style="animation-delay:.1s">🎨</span> <span>🧒🏿</span></div>
+ <span class="flower" style="left:6%">🌼</span><span class="flower" style="left:30%">🌷</span><span class="flower" style="left:58%">🌻</span><span class="flower" style="left:84%">🌸</span>
+</section>
+
+<!-- ONBOARDING -->
+<section class="screen" id="onb"><div class="pad" id="onbBody"></div></section>
+
+<!-- HOME -->
+<section class="screen" id="home">
+ <div class="top"><button class="gm" data-go="games">🎮 Games</button><button class="pill" id="pStreak">🔥 1</button><button class="pill" id="pXp" data-go="shop">⭐ 0</button><span class="lang">🇳🇦</span></div>
+ <div id="homeBody"></div>
+</section>
+
+<!-- GAMES HUB -->
+<section class="screen" id="games" style="background:#e9f7ff">
+ <div class="top" style="background:none;box-shadow:none"><button class="x" data-go="home">⬅️</button><span></span><button class="x" data-go="settings">⚙️</button></div>
+ <h2 style="text-align:center;font-size:32px">What are we doing today?</h2>
+ <div class="tiles">
+  <button class="tile" style="background:#ff6fa5" data-g="match"><span>🧩</span>Puzzles</button>
+  <button class="tile" style="background:#2f6bff" data-g="quiz"><span>❓</span>Quizzes</button>
+  <button class="tile" style="background:#ff9f1c" data-g="sounds"><span>🔊</span>Sounds</button>
+  <button class="tile" style="background:#9b5de5" data-g="color"><span>🎨</span>Coloring</button>
+  <button class="tile" style="background:#27a844;grid-column:span 2" data-g="words"><span>🔍</span>Find words</button>
+ </div>
+ <div class="chips" style="padding:0 18px 20px;justify-content:center" id="cats"></div>
+</section>
+
+<!-- GENERIC PANEL -->
+<section class="screen" id="panel"><div class="top"><button class="x" id="pBack">⬅️</button><b id="pTitle" style="font-size:22px"></b><span></span></div><div id="pBody" style="padding-bottom:30px"></div></section>
+
+<!-- LESSON -->
+<section class="screen" id="lesson"><div class="pad"><div class="row"><button class="x" id="lQuit">✖️</button><div class="bar"><i id="lBar"></i></div></div><div id="lBody"></div></div></section>
+
+<div class="nav" id="nav" style="display:none">
+ <button data-tab="home" class="on" aria-label="Home">🏠</button><button data-tab="league" aria-label="Leaderboard">🏆</button><button data-tab="facts" aria-label="Fun facts">💡</button><button id="more" aria-label="More">👤▾</button>
+</div>
+<div class="menu" id="menu"><button data-tab="profile">👤 Profile</button><button data-tab="practice">🔁 Practice</button><button data-tab="langs">🌍 Languages</button></div>
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+let V = [];
+const G=[{e:'🌅',w:'Wa lalapo',t:'good morning'},{e:'👍',w:'Nawa',t:'good / fine'},{e:'🙏',w:'Tangi',t:'thank you'}];
+const SECS=[{n:'Greetings',i:'👋',p:G},{n:'Animals',i:'🐄',p:V.slice(0,3)},{n:'Nature',i:'🌿',p:V.slice(3,7)},{n:'My world',i:'🏠',p:V.slice(7)},{n:'Show-off',i:'🏅',p:[...G,...V]}];
+const FACTS=['Oshikwanyama is spoken by the Kwanyama people in northern Namibia and southern Angola.','Oshikwanyama is part of the Oshiwambo language family, so its cousins sound a little alike!','Many children’s stories are told around the fire at night. Storytellers are treasured.','Namibia has more than ten indigenous languages. Each one carries its own stories.','Words are like seeds: share them and they grow. Teach a friend one word today!'];
+const LEAGUES=[['🥉','Bronze'],['🥈','Silver'],['🥇','Gold'],['💎','Sapphire'],['💚','Emerald']];
+const COSTUMES=[['🎩','Top hat',30],['👑','Crown',50],['🕶️','Cool shades',40],['🎀','Big bow',20]];
+const S={name:'',age:'',gender:'',level:'',xp:0,gems:5,streak:1,done:0,music:true,own:[],wear:'',league:0,last:''};
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const shuf=a=>[...a].sort(()=>Math.random()-.5);
+let cur='land';
+function show(id){$$('.screen').forEach(s=>s.classList.toggle('on',s.id===id));cur=id;$('#nav').style.display=['home','panel'].includes(id)?'flex':'none';}
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2200)}
+let ac,tune;const TW=[262,262,392,392,440,440,392,0,349,349,330,330,294,294,262,0];
+function ctx(){return ac||(ac=new (window.AudioContext||window.webkitAudioContext)())}
+function note(f,d=.28,v=.07,type='triangle'){if(!f)return;const c=ctx(),o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d)}
+function music(){clearInterval(tune);if(!S.music)return;let i=0;tune=setInterval(()=>{if(['lesson'].includes(cur))return;note(TW[i%16]*(cur==='land'?1:.75),.35,.05);i++},380)}
+function say(w){[0,1,2].forEach(i=>setTimeout(()=>note(300+((w.length*37+i*90)%300),.2,.12,'sine'),i*160));toast('🔊 “'+w+'” – real voice audio comes with the voice dataset')}
+
+async function loadGameData() {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/vocabulary');
+        V = await response.json();
+        console.log("Successfully loaded Oshikwanyama vocabulary:", V);
+        ctx().resume();
+        music();
+        onb(0);
+    } catch (error) {
+        alert("Could not connect to the backend server. Is FastAPI running?");
+        console.error("Backend connection error:", error);
+    }
+}
+$('#go').onclick = loadGameData;
+
+const ob={};
+function onb(step){show('onb');const b=$('#onbBody');
+ if(step===0)b.innerHTML=`<h2>Hi friend! 👋 What’s your name?</h2><input type="text" id="nm" placeholder="Type your name" maxlength="14" autocomplete="off"><div style="margin-top:22px"><button class="btn" id="nx">Next</button></div>`,$('#nx').onclick=()=>{S.name=$('#nm').value.trim()||'Friend';onb(1)};
+ if(step===1)b.innerHTML=`<h2>How old are you, ${S.name}?</h2><div class="chips" id="ch">${['3-5','5-7','7-9','9-11','11-13'].map(a=>`<button class="chip">${a}</button>`).join('')}</div>`,pick('#ch',v=>{S.age=v;onb(2)});
+ if(step===2)b.innerHTML=`<h2>Are you a girl or a boy?</h2><div class="gender" id="ch"><button class="chip" data-v="girl">👧🏾<small>Girl</small></button><button class="chip" data-v="boy">👦🏾<small>Boy</small></button></div>`,pick('#ch',v=>{S.gender=v;onb(3)},1);
+ if(step===3)b.innerHTML=`<h2>How much Oshikwanyama do you know?</h2><div class="lv" id="ch"><button class="chip">🌱 Beginner</button><button class="chip">🌿 Intermediate</button><button class="chip">🌳 Advanced</button></div><p class="note">Higher levels get harder words and more choices.</p>`,pick('#ch',v=>{S.level=v.split(' ')[1];onb(4)});
+ if(step===4){b.innerHTML=`<div style="text-align:center;margin-top:80px"><span class="hg">⏳</span><h2>Analyzing answers…</h2><div id="ct"></div></div>`;setTimeout(()=>{$('#ct').innerHTML=`<p style="font-size:22px">Ready, ${S.name}! Your ${S.level} path is set. 🎉</p><button class="btn" id="cn">Continue</button>`;$('#cn').onclick=()=>{S.last=new Date().toDateString();renderHome();show('home')};},2600)}
+}
+function pick(sel,fn,data){$$(sel+' .chip').forEach(c=>c.onclick=()=>{$$(sel+' .chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');setTimeout(()=>fn(data?c.dataset.v:c.textContent.trim()),250)})}
+
+function stats(){$('#pStreak').textContent='🔥 '+S.streak;$('#pXp').textContent='⭐ '+S.xp+'  💎 '+S.gems}
+
+function renderHome(){
+    stats();
+    const av=S.wear;
+    
+    let h = `
+    <div class="unit">
+        <div>UNIT 1 ${av?av:''}</div>
+        <b style="font-size: 22px;">Introduce yourself</b>
+        <div style="margin-top: 4px;">Hi ${S.name}! Finish all 5 sections to complete the unit.</div>
+    </div>`;
+    
+    h += `<div class="card" id="kuluCard" style="text-align:center; margin: 15px 16px; background: linear-gradient(135deg, #e0f2fe, #f0fdf4); border: 2px solid var(--blue); cursor: pointer;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="font-size: 45px; animation: bob 2s ease-in-out infinite;">🦉</div>
+            <div style="text-align: left;">
+                <b style="font-size: 18px; color: var(--blue);">Kulu ka Hafa (AI Tutor)</b><br>
+                <span style="font-size: 14px; color: var(--text);">Tap here to chat & learn Oshikwanyama! 🌟</span>
+            </div>
+        </div>
+    </div>`;
+
+    h += `<div class="card" style="text-align:center; margin: 15px 16px;">
+        <button class="btn alt" id="storyModeBtn" style="width: 100%;">📚 Read a Story</button>
+    </div>`;
+
+    h += `<div class="path">`;
+    
+    SECS.forEach((s,i)=>{
+        const st=i<S.done?'done':i===S.done?'cur':'lock';
+        const off=[0,-50,40,-40,0][i];
+        h+=`<button class="node ${st}" style="margin-left:${off}px" data-sec="${i}" aria-label="${s.n}">${st==='done'?'✅':st==='lock'?'🔒':s.i}<small>${s.n}</small></button>`;
+        if(i<4)h+='<span style="height:6px"></span>'
+    });
+    
+    h+=`</div>${S.done>=5?'<div class="card" style="text-align:center;font-size:22px">🎉 Unit 1 complete! Unit 2 is coming soon.</div>':''}`;
+    
+    $('#homeBody').innerHTML=h;
+    
+    $$('.node').forEach(n=>n.onclick=()=>{
+        const i=+n.dataset.sec;
+        if(i>S.done)toast('Finish the section before first! 🔒');
+        else startLesson(i)
+    });
+
+    $('#kuluCard').onclick = () => {
+        let chatUi = `
+            <div style="text-align: center; padding: 10px;">
+                <div id="modalOwlFace" style="font-size: 70px; margin-bottom: 10px; animation: bob 2s ease-in-out infinite;">🦉</div>
+                <p style="font-size: 15px; color: var(--blue); font-weight: bold;">Mhola! Let's practice Oshikwanyama together.</p>
+                
+                <div id="chatHistory" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; height: 160px; overflow-y: auto; padding: 10px; text-align: left; margin-bottom: 15px; font-size: 14px;">
+                    <div style="margin-bottom: 8px; color: #1e293b;"><b>Kulu:</b> Mhola, ${S.name}! Tuvula popi Oshikwanyama! (Hello, let's speak Oshikwanyama!) Say 'Mhola' or ask me for a word.</div>
+                </div>
+                
+                <div style="display: flex; gap: 8px; margin-bottom: 80px;">
+                    <input type="text" id="childInput" placeholder="Type in English or Oshikwanyama..." style="flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 14px;">
+                    <button class="btn" id="sendChatBtn" style="padding: 10px 16px; font-size: 14px;">Send 🚀</button>
+                </div>
+            </div>
+        `;
+        
+        panel("Kulu's Language Chat", chatUi);
+        
+        const handleSend = async () => {
+            const inputField = document.getElementById('childInput');
+            const history = document.getElementById('chatHistory');
+            const owlFace = document.getElementById('modalOwlFace');
+            const text = inputField.value.trim();
+            if(!text) return;
+            
+            history.innerHTML += `<div style="margin-bottom: 8px; text-align: right; color: #0284c7;"><b>You:</b> ${text}</div>`;
+            inputField.value = "";
+            history.scrollTop = history.scrollHeight;
+            owlFace.innerHTML = "🧐";
+            
+            try {
+                const res = await fetch('http://127.0.0.1:8000/api/ai-tutor', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        child_name: S.name || "Friend",
+                        age: parseInt(S.age) || 6,
+                        current_word: "Oshikwanyama",
+                        child_question: text
+                    })
+                });
+                const data = await res.json();
+                owlFace.innerHTML = "✨";
+                history.innerHTML += `<div style="margin-bottom: 8px; color: #1e293b;"><b>Kulu:</b> ${data.reply}</div>`;
+                history.scrollTop = history.scrollHeight;
+            } catch (err) {
+                owlFace.innerHTML = "🦉";
+                history.innerHTML += `<div style="margin-bottom: 8px; color: #ef4444;"><b>Kulu:</b> Nawa nawa! Keep trying! 🌟</div>`;
+            }
+        };
+        
+        document.getElementById('sendChatBtn').onclick = handleSend;
+        document.getElementById('childInput').onkeypress = (e) => {
+            if(e.key === 'Enter') handleSend();
+        };
+    };
+
+    $('#storyModeBtn').onclick = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/stories');
+            const stories = await response.json();
+            
+            const renderStoryMenu = () => {
+                let html = `<p style="font-size:18px; margin-bottom: 20px;">Choose a story to read!</p>`;
+                
+                stories.forEach((story, index) => {
+                    html += `
+                    <div class="card" style="margin-bottom: 15px; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 15px;" id="storyBtn_${index}">
+                        <img src="http://127.0.0.1:8000/images/${story.cover}" style="width: 80px; height: 80px; border-radius: 10px; object-fit: cover;">
+                        <div>
+                            <b style="font-size: 20px; color: var(--blue);">${story.title}</b><br>
+                            <span style="font-size: 14px; color: var(--text); font-weight: bold;">${story.pages.length} Pages</span>
+                        </div>
+                    </div>`;
+                });
+                
+                panel("📚 Story Library", html);
+                
+                stories.forEach((story, index) => {
+                    $(`#storyBtn_${index}`).onclick = () => renderPage(story);
+                });
+            };
+
+            const renderPage = (selectedStory) => {
+                let currentPage = 0;
+                
+                const showCurrentPage = () => {
+                    const page = selectedStory.pages[currentPage];
+                    let html = `
+                        <div style="text-align:center; padding: 10px 20px;">
+                            <img src="http://127.0.0.1:8000/images/${page.img}" 
+                                 style="width: 100%; height: 280px; object-fit: cover; border-radius: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.15); animation: bob 3s ease-in-out infinite;">
+                            
+                            <h2 style="font-size: 26px; color: var(--blue); margin-top: 24px; line-height: 1.3;">${page.kwy}</h2>
+                            
+                            <div style="min-height: 60px; margin-top: 10px;">
+                                <p id="englishTranslation" style="font-size: 20px; color: var(--green); font-weight: 600; display: none; margin: 0; padding: 0;">${page.eng}</p>
+                            </div>
+                            
+                            <div style="margin-top: 20px; margin-bottom: 90px; display: flex; justify-content: space-around; gap: 10px;">
+                                <button class="btn alt" id="btnTranslate" style="font-size: 16px; padding: 10px 16px;">🌍 Translate</button>
+                                ${currentPage < selectedStory.pages.length - 1 
+                                    ? `<button class="btn" id="btnNext" style="font-size: 16px; padding: 10px 16px;">Next ➡️</button>` 
+                                    : `<button class="btn" id="btnFinish" style="font-size: 16px; padding: 10px 16px;">Finish 🎉</button>`}
+                            </div>
+                        </div>
+                    `;
+                    
+                    panel(selectedStory.title, html);
+
+                    let showEnglish = false;
+                    $('#btnTranslate').onclick = () => { 
+                        showEnglish = !showEnglish; 
+                        $('#englishTranslation').style.display = showEnglish ? 'block' : 'none';
+                    };
+                    
+                    if ($('#btnNext')) {
+                        $('#btnNext').onclick = () => { 
+                            currentPage++; 
+                            showCurrentPage(); 
+                        };
+                    }
+                    
+                    if ($('#btnFinish')) {
+                        $('#btnFinish').onclick = () => { 
+                            S.xp += 15; 
+                            toast('+15 XP for reading! 📚');
+                            renderStoryMenu(); 
+                        };
+                    }
+                };
+                
+                showCurrentPage();
+            };
+
+            renderStoryMenu();
+
+        } catch (error) {
+            toast('Could not load stories. Is FastAPI running?');
+            console.error("Story error:", error);
+        }
+    };
+}
+
+document.addEventListener('click',e=>{
+    const g=e.target.closest('[data-go]');
+    if(g){
+        const t=g.dataset.go;
+        if(t==='home'){renderHome();show('home')}
+        else if(t==='games'){gamesHub();show('games')}
+        else if(t==='shop')shop();
+        else if(t==='settings')settings();
+    }
+    const t=e.target.closest('[data-tab]');
+    if(t){$('#menu').classList.remove('on');tab(t.dataset.tab)}
+    const gg=e.target.closest('[data-g]');
+    if(gg)game(gg.dataset.g);
+    if(!e.target.closest('#more,#menu'))$('#menu').classList.remove('on');
+});
+
+$('#more').onclick=e=>{e.stopPropagation();$('#menu').classList.toggle('on')};
+
+function panel(t,html,back){
+    show('panel');
+    $('#pTitle').textContent=t;
+    $('#pBody').innerHTML=html;
+    $('#pBack').onclick=back||(()=>{renderHome();show('home')});
+    $$('#nav button').forEach(b=>b.classList.remove('on'));
+}
+
+function tab(t){
+    if(t==='home'){renderHome();show('home');$$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab==='home'));return}
+    if(t==='league'){
+        const names=['Zeni','Tuli','Ndapewa','Nangula','Kaleb','Petrus'];
+        const rows=shuf(names).slice(0,5).map((n,i)=>[n,[320,280,240,190,150][i]]);
+        rows.push([S.name+' (you)',S.xp]);
+        rows.sort((a,b)=>b[1]-a[1]);
+        panel('Leaderboard',`<div class="chips" style="padding:12px 16px;justify-content:center">${LEAGUES.map((l,i)=>`<span class="chip ${i===S.league?'sel':''}" style="font-size:18px">${l[0]} ${l[1]}</span>`).join('')}</div>${rows.map((r,i)=>`<div class="lg ${r[0].includes('you')?'me':''}"><b>${i+1}</b> ${r[0]}<span style="margin-left:auto">⭐ ${r[1]}</span></div>`).join('')}<p class="note">Sample players. Earn XP to climb to the next league!</p>`);
+    }
+    if(t==='facts'){
+        let i=0;
+        const f=()=>{$('#fc').innerHTML=`<div style="font-size:60px">🦒</div><p style="font-size:22px;font-weight:600">${FACTS[i]}</p>`};
+        panel('Fun facts','<div class="card" id="fc" style="text-align:center"></div><div style="text-align:center"><button class="btn alt" id="nf">Another fact!</button></div>');
+        f();
+        $('#nf').onclick=()=>{i=(i+1)%FACTS.length;f();note(660,.2)};
+    }
+    if(t==='profile'){
+        panel('Profile',`<div class="card" style="text-align:center"><div style="font-size:80px">${S.gender==='girl'?'👧🏾':'👦🏾'}${S.wear}</div><h2>${S.name}</h2><p>Age ${S.age} · ${S.level}<br>🔥 ${S.streak} day streak · ⭐ ${S.xp} XP · 💎 ${S.gems} gems</p></div><p style="text-align:center"><button class="btn alt" data-go="shop">Costume shop</button></p>`);
+    }
+    if(t==='practice'){
+        panel('Practice','<p class="note" style="font-size:18px">Quick mix of words you have met.</p><p style="text-align:center"><button class="btn" id="pr">Start practice</button></p>');
+        $('#pr').onclick=()=>startLesson(-1);
+    }
+    if(t==='langs'){
+        panel('Languages',`<div class="card" style="font-size:22px">🇳🇦 <b>Oshikwanyama</b> – learning now</div>${['Oshindonga','Otjiherero','Khoekhoegowab','Rukwangali'].map(l=>`<div class="card" style="font-size:20px;opacity:.55">🔒 ${l} – coming soon</div>`).join('')}`);
+    }
+}
+
+function shop(){
+    panel('Costume shop',`<p class="note" style="font-size:18px">⭐ ${S.xp} XP · 💎 ${S.gems} gems</p>${COSTUMES.map((c,i)=>`<div class="lg"><span style="font-size:36px">${c[0]}</span>${c[1]}<button class="btn" style="margin-left:auto;font-size:16px;padding:8px 14px" data-b="${i}">${S.own.includes(c[0])?(S.wear===c[0]?'Wearing':'Wear'):'⭐ '+c[2]}</button></div>`).join('')}<div class="lg"><span style="font-size:36px">💎</span>5 gems = more games<button class="btn alt" style="margin-left:auto;font-size:16px;padding:8px 14px" data-b="gem">⭐ 25</button></div>`);
+    $$('[data-b]').forEach(b=>b.onclick=()=>{
+        const k=b.dataset.b;
+        if(k==='gem'){
+            if(S.xp<25)return toast('Not enough XP yet!');
+            S.xp-=25;S.gems+=5;toast('+5 gems! 💎');
+        }else{
+            const c=COSTUMES[k];
+            if(!S.own.includes(c[0])){
+                if(S.xp<c[2])return toast('Not enough XP yet!');
+                S.xp-=c[2];S.own.push(c[0]);
+            }
+            S.wear=c[0];
+        }
+        stats();
+        shop();
+    });
+}
+
+function settings(){
+    panel('Settings',`<div class="lg">🎵 Music<button class="btn alt" id="tm" style="margin-left:auto;font-size:16px;padding:8px 14px">${S.music?'On':'Off'}</button></div><div class="lg">🔊 Voice (soon)<span style="margin-left:auto">🔒</span></div><div class="lg">🧒 Change player<button class="btn" id="rs" style="margin-left:auto;font-size:16px;padding:8px 14px">Restart</button></div>`,()=>{gamesHub();show('games')});
+    $('#tm').onclick=()=>{S.music=!S.music;music();settings()};
+    $('#rs').onclick=()=>location.reload();
+}
+
+let L;
+function mkQ(p){
+    const n={Beginner:3,Intermediate:4,Advanced:5}[S.level]||3;
+    const pool=shuf([...G,...V]);
+    const rev=S.level==='Advanced'&&Math.random()<.5;
+    const o=shuf([p,...pool.filter(x=>x!==p)].slice(0,n));
+    return{p,o,rev};
+}
+
+function startLesson(i){
+    const sec=i<0?{n:'Practice',p:shuf([...G,...V]).slice(0,5)}:SECS[i];
+    L={i,sec,qs:shuf(sec.p).map(mkQ),n:0,total:sec.p.length,wrong:[],redo:false,done:0};
+    show('lesson');
+    nextQ();
+}
+
+function nextQ(){
+    const b=$('#lBody');
+    $('#lBar').style.width=(L.done/L.total*100)+'%';
+    if(!L.qs.length){
+        if(L.wrong.length&&!L.redo){
+            L.redo=true;
+            L.qs=L.wrong.map(q=>mkQ(q.p));
+            L.total+=L.qs.length;
+            toast('Let’s try the tricky ones again! 💪');
+            return nextQ();
+        }
+        return finish();
+    }
+    const q=L.qs[0];
+    b.innerHTML=`<div class="q">${q.rev?'Which word means “'+q.p.t+'”?':'What does this mean?'}</div>${q.rev?`<div style="font-size:70px;text-align:center">${q.p.e}</div>`:`<div class="word">${q.p.w}</div><button class="listen" aria-label="Listen">🔊</button>`}<div class="opts">${q.o.map(x=>`<button class="opt" data-w="${x.w}">${q.rev?x.w:`<span class="e">${x.e}</span>${x.t}`}</button>`).join('')}</div><div class="fb" id="fb"></div>`;
+    if(!q.rev)$('.listen').onclick=()=>say(q.p.w);
+    $$('.opt').forEach(o=>o.onclick=()=>{
+        if($('#fb').dataset.d)return;
+        $('#fb').dataset.d=1;
+        const ok=o.dataset.w===q.p.w;
+        o.classList.add(ok?'ok':'no');
+        if(ok){
+            $('#fb').textContent='Great job! 🌟';
+            note(660,.2);
+            note(880,.3);
+        }else{
+            $('#fb').textContent=q.p.w+' = '+q.p.t+' '+q.p.e;
+            note(200,.4);
+            if(!L.redo)L.wrong.push(q);
+        }
+        L.qs.shift();
+        L.done++;
+        setTimeout(nextQ,1400);
+    });
+}
+
+function finish(){
+    const xp=L.i<0?10:20+(L.wrong.length?0:10);
+    const first=L.i===S.done;
+    let h=`<div style="text-align:center"><div style="font-size:80px">🎉</div><h2>${L.sec.n} complete!</h2><p style="font-size:24px;font-weight:700">+${xp} XP ⭐</p>`;
+    if(L.wrong.length)h+=`<div class="card" style="text-align:left"><b>Words to remember:</b>${L.wrong.map(q=>`<div style="font-size:20px;margin-top:6px">${q.p.e} <b>${q.p.w}</b> = ${q.p.t}</div>`).join('')}</div>`;else h+='<p style="font-size:20px">Perfect! No mistakes! 🏆</p>';
+    h+=`<button class="btn" id="fd">Continue</button></div>`;
+    $('#lBody').innerHTML=h;
+    $('#lBar').style.width='100%';
+    [523,659,784,1047].forEach((f,i)=>setTimeout(()=>note(f,.3,.1),i*150));
+    $('#fd').onclick=()=>{
+        S.xp+=xp;
+        if(first&&L.i>=0)S.done++;
+        const today=new Date().toDateString();
+        if(S.last!==today){S.streak++;S.last=today;}
+        if(S.xp>=150)S.league=Math.min(4,Math.floor(S.xp/150));
+        renderHome();
+        show('home');
+    };
+}
+
+$('#lQuit').onclick=()=>{renderHome();show('home')};
+
+function gamesHub(){
+    $('#cats').innerHTML=['🐦 Birds','🐾 Animals','🔷 Shapes','🔢 Numbers','🚗 Vehicles','🍎 Fruits','🥕 Vegetables','🔤 Jumbled'].map(c=>`<span class="chip" style="font-size:16px;padding:6px 12px" data-c="${c}">${c}</span>`).join('');
+    $$('#cats .chip').forEach(c=>c.onclick=()=>{
+        if(/Animals|Jumbled/.test(c.dataset.c))game('words');
+        else toast('Coming soon with the full word list!');
+    });
+}
+
+const back=()=>{gamesHub();show('games')};
+
+function game(g){
+    if(g==='quiz'){startLesson(-1);return;}
+    if(g==='match'){
+        const p=shuf(V).slice(0,3);
+        const cards=shuf(p.flatMap(x=>[{k:x.w,l:x.e},{k:x.w,l:x.w}]));
+        let f=null,lock=0,m=0;
+        panel('Puzzle: match pairs','<p class="note" style="font-size:18px">Match each picture with its Oshikwanyama word.</p><div class="grid3" id="mg"></div><div class="fb" id="mf"></div>',back);
+        $('#mg').innerHTML=cards.map((c,i)=>`<button class="mc" data-i="${i}">❔</button>`).join('');
+        $$('.mc').forEach(b=>b.onclick=()=>{
+            const i=+b.dataset.i,c=cards[i];
+            if(lock||b.classList.contains('up'))return;
+            b.classList.add('up');
+            b.textContent=c.l;
+            note(500,.15);
+            if(!f){f={b,c};return;}
+            if(f.c.k===c.k){
+                const a=f.b;
+                f=null;
+                m++;
+                lock=1;
+                setTimeout(()=>{
+                    a.classList.add('gone');
+                    b.classList.add('gone');
+                    lock=0;
+                    note(880,.3);
+                    if(m===3){$('#mf').textContent='You did it! +10 XP 🎉';S.xp+=10;stats();}
+                },500);
+            }else{
+                const a=f.b;
+                f=null;
+                lock=1;
+                setTimeout(()=>{
+                    [a,b].forEach(x=>{x.classList.remove('up');x.textContent='❔'});
+                    lock=0;
+                },900);
+            }
+        });
+    }
+    if(g==='sounds'){
+        panel('Sounds','<p class="note" style="font-size:18px">Tap to hear and see the word.</p><div class="grid3">'+V.map(v=>`<button class="mc up" style="font-size:42px" data-s="${v.w}">${v.e}</button>`).join('')+'</div><div class="fb" id="sf"></div>',back);
+        $$('[data-s]').forEach(b=>b.onclick=()=>{
+            const v=V.find(x=>x.w===b.dataset.s);
+            say(v.w);
+            $('#sf').textContent=v.w+' = '+v.t;
+        });
+    }
+    if(g==='color'){
+        const cols=['#ff4f8f','#ffd23f','#27a844','#2f6bff','#ff9f1c','#9b5de5','#2b2350'];
+        let col=cols[0];
+        panel('Coloring','<div style="padding:0 16px"><canvas id="cv" width="360" height="360"></canvas><div class="chips" id="pal" style="justify-content:center;margin:12px 0"></div><div style="text-align:center"><button class="btn alt" id="cl">Clear</button></div></div>',back);
+        const cv=$('#cv'),x=cv.getContext('2d');
+        const draw=()=>{
+            x.fillStyle='#fff';
+            x.fillRect(0,0,360,360);
+            x.font='230px serif';
+            x.textAlign='center';
+            x.fillStyle='#e8e8f0';
+            x.fillText('🐄',180,250);
+            x.strokeStyle='#cfd8ff';
+            x.lineWidth=6;
+            x.strokeRect(6,6,348,348);
+        };
+        draw();
+        $('#pal').innerHTML=cols.map(c=>`<button class="chip" style="background:${c};width:44px;height:44px;padding:0;border-radius:50%" data-c="${c}" aria-label="colour"></button>`).join('');
+        $$('#pal .chip').forEach(b=>b.onclick=()=>col=b.dataset.c);
+        let d=0;
+        const pt=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*360/r.width,(e.clientY-r.top)*360/r.height]};
+        cv.onpointerdown=e=>{d=1;const[a,b]=pt(e);x.beginPath();x.moveTo(a,b)};
+        cv.onpointermove=e=>{if(!d)return;const[a,b]=pt(e);x.strokeStyle=col;x.lineWidth=22;x.lineCap='round';x.lineTo(a,b);x.stroke()};
+        cv.onpointerup=cv.onpointerleave=()=>d=0;
+        $('#cl').onclick=draw;
+    }
+    if(g==='words'){
+        const w=shuf(V)[0];
+        const ls=shuf(w.w.toUpperCase().split(''));
+        let ans='';
+        let used=[];
+        panel('Find the word','',back);
+        const r=()=>{
+            $('#pBody').innerHTML=`<div style="text-align:center;padding:16px"><div style="font-size:90px">${w.e}</div><p style="font-size:20px">Unscramble the Oshikwanyama word for “${w.t}”</p><div class="word" style="min-height:56px;letter-spacing:6px">${ans}</div><div class="letters">${ls.map((l,i)=>ans.length&&used.includes(i)?'':`<button data-l="${i}">${l}</button>`).join('')}</div><button class="btn alt" id="rr" style="margin-top:14px">Try again</button><div class="fb" id="wf"></div></div>`;
+            $$('[data-l]').forEach(b=>b.onclick=()=>{
+                used.push(+b.dataset.l);
+                ans+=ls[+b.dataset.l];
+                note(500,.1);
+                if(ans.length===ls.length){
+                    if(ans===w.w.toUpperCase()){
+                        r();
+                        $('#wf').textContent='Yes! '+w.w+' 🎉 +5 XP';
+                        S.xp+=5;
+                        stats();
+                        note(880,.3);
+                        return;
+                    }else{
+                        ans='';
+                        used=[];
+                        toast('Almost! Try again 💪');
+                    }
+                }
+                r();
+            });
+            $('#rr').onclick=()=>{ans='';used=[];r();};
+        };
+        r();
+    }
+}
+</script></body></html>
