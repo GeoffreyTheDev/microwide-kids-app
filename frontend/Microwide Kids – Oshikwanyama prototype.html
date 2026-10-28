@@ -145,9 +145,15 @@ canvas{background:#fff;border-radius:20px;border:4px solid #cfd8ff;touch-action:
 <!-- LESSON -->
 <section class="screen" id="lesson"><div class="pad"><div class="row"><button class="x" id="lQuit">✖️</button><div class="bar"><i id="lBar"></i></div></div><div id="lBody"></div></div></section>
 
+<!-- BOTTOM NAVIGATION BAR -->
 <div class="nav" id="nav" style="display:none">
- <button data-tab="home" class="on" aria-label="Home">🏠</button><button data-tab="league" aria-label="Leaderboard">🏆</button><button data-tab="facts" aria-label="Fun facts">💡</button><button id="more" aria-label="More">👤▾</button>
+ <button data-tab="home" class="on" aria-label="Home">🏠</button>
+ <button data-tab="league" aria-label="Leaderboard">🏆</button>
+ <button data-tab="culture" aria-label="Culture & Nature">🌍</button>
+ <button data-tab="facts" aria-label="Fun facts">💡</button>
+ <button id="more" aria-label="More">👤▾</button>
 </div>
+
 <div class="menu" id="menu"><button data-tab="profile">👤 Profile</button><button data-tab="practice">🔁 Practice</button><button data-tab="langs">🌍 Languages</button></div>
 <div class="toast" id="toast"></div>
 </div>
@@ -155,7 +161,7 @@ canvas{background:#fff;border-radius:20px;border:4px solid #cfd8ff;touch-action:
 <script>
 let V = [];
 const G=[{e:'🌅',w:'Wa lalapo',t:'good morning'},{e:'👍',w:'Nawa',t:'good / fine'},{e:'🙏',w:'Tangi',t:'thank you'}];
-const SECS=[{n:'Greetings',i:'👋',p:G},{n:'Animals',i:'🐄',p:V.slice(0,3)},{n:'Nature',i:'🌿',p:V.slice(3,7)},{n:'My world',i:'🏠',p:V.slice(7)},{n:'Show-off',i:'🏅',p:[...G,...V]}];
+let SECS = []; // Changed to let so we can populate it after fetch
 const FACTS=['Oshikwanyama is spoken by the Kwanyama people in northern Namibia and southern Angola.','Oshikwanyama is part of the Oshiwambo language family, so its cousins sound a little alike!','Many children’s stories are told around the fire at night. Storytellers are treasured.','Namibia has more than ten indigenous languages. Each one carries its own stories.','Words are like seeds: share them and they grow. Teach a friend one word today!'];
 const LEAGUES=[['🥉','Bronze'],['🥈','Silver'],['🥇','Gold'],['💎','Sapphire'],['💚','Emerald']];
 const COSTUMES=[['🎩','Top hat',30],['👑','Crown',50],['🕶️','Cool shades',40],['🎀','Big bow',20]];
@@ -169,12 +175,34 @@ let ac,tune;const TW=[262,262,392,392,440,440,392,0,349,349,330,330,294,294,262,
 function ctx(){return ac||(ac=new (window.AudioContext||window.webkitAudioContext)())}
 function note(f,d=.28,v=.07,type='triangle'){if(!f)return;const c=ctx(),o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d)}
 function music(){clearInterval(tune);if(!S.music)return;let i=0;tune=setInterval(()=>{if(['lesson'].includes(cur))return;note(TW[i%16]*(cur==='land'?1:.75),.35,.05);i++},380)}
-function say(w){[0,1,2].forEach(i=>setTimeout(()=>note(300+((w.length*37+i*90)%300),.2,.12,'sine'),i*160));toast('🔊 “'+w+'” – real voice audio comes with the voice dataset')}
+
+// --- UPDATED TEXT-TO-SPEECH SAY FUNCTION ---
+function say(w) {
+    toast('🔊 “' + w + '”');
+    const audioUrl = `http://127.0.0.1:8000/api/tts?word=${encodeURIComponent(w)}`;
+    const player = new Audio(audioUrl);
+    
+    player.play().catch(e => {
+        console.error("Audio playback failed or backend endpoint missing:", e);
+        // Fallback synthetic tone if the API call fails
+        [0,1,2].forEach(i=>setTimeout(()=>note(300+((w.length*37+i*90)%300),.2,.12,'sine'),i*160));
+    });
+}
 
 async function loadGameData() {
     try {
         const response = await fetch('http://127.0.0.1:8000/api/vocabulary');
         V = await response.json();
+        
+        // Define the lesson groups AFTER V has been fully populated by the backend
+        SECS = [
+            {n:'Greetings',i:'👋',p:G},
+            {n:'Animals',i:'🐄',p:V.slice(0,3)},
+            {n:'Nature',i:'🌿',p:V.slice(3,7)},
+            {n:'My world',i:'🏠',p:V.slice(7)},
+            {n:'Show-off',i:'🏅',p:[...G,...V]}
+        ];
+        
         console.log("Successfully loaded Oshikwanyama vocabulary:", V);
         ctx().resume();
         music();
@@ -421,6 +449,41 @@ function tab(t){
         rows.push([S.name+' (you)',S.xp]);
         rows.sort((a,b)=>b[1]-a[1]);
         panel('Leaderboard',`<div class="chips" style="padding:12px 16px;justify-content:center">${LEAGUES.map((l,i)=>`<span class="chip ${i===S.league?'sel':''}" style="font-size:18px">${l[0]} ${l[1]}</span>`).join('')}</div>${rows.map((r,i)=>`<div class="lg ${r[0].includes('you')?'me':''}"><b>${i+1}</b> ${r[0]}<span style="margin-left:auto">⭐ ${r[1]}</span></div>`).join('')}<p class="note">Sample players. Earn XP to climb to the next league!</p>`);
+    }
+    if(t==='culture'){
+        panel('Namibia: Culture & Nature', `
+            <div style="padding: 0 16px;">
+                <div class="card" style="background: linear-gradient(135deg, #fef08a, #fed7aa); border: 2px solid var(--sun); text-align: center; margin-bottom: 16px;">
+                    <div style="font-size: 40px;">🇳🇦</div>
+                    <h3 style="margin: 5px 0; color: var(--ink);">The Land of Beauty</h3>
+                    <p style="font-size: 14px; color: #475569; margin: 0;">Explore the breathtaking landscapes and rich traditions of Namibia!</p>
+                </div>
+                
+                <h3 style="color: var(--blue); margin-bottom: 8px;">🌄 Beautiful Landscapes</h3>
+                <div class="card" style="margin-bottom: 10px;">
+                    <b>🏜️ The Namib Desert</b><br>
+                    <span style="font-size: 14px; color: #475569;">One of the oldest deserts in the world, featuring towering red sand dunes.</span>
+                </div>
+                <div class="card" style="margin-bottom: 10px;">
+                    <b>🐘 Etosha National Park</b><br>
+                    <span style="font-size: 14px; color: #475569;">A breathtaking sanctuary where elephants and lions roam free around vast salt pans.</span>
+                </div>
+                <div class="card" style="margin-bottom: 16px;">
+                    <b>🌄 The Kunene Region</b><br>
+                    <span style="font-size: 14px; color: #475569;">A rugged landscape of majestic mountains and flowing rivers.</span>
+                </div>
+
+                <h3 style="color: var(--blue); margin-bottom: 8px;">🔥 Cultural Traditions</h3>
+                <div class="card" style="margin-bottom: 10px;">
+                    <b>Stories Around the Fire</b><br>
+                    <span style="font-size: 14px; color: #475569;">Families gather under bright starry nights to share timeless folktales and life lessons.</span>
+                </div>
+                <div class="card" style="margin-bottom: 30px;">
+                    <b>Music & Celebration</b><br>
+                    <span style="font-size: 14px; color: #475569;">Joyful singing and rhythmic dancing celebrate community, harvest, and heritage.</span>
+                </div>
+            </div>
+        `);
     }
     if(t==='facts'){
         let i=0;
