@@ -179,7 +179,7 @@ function music(){clearInterval(tune);if(!S.music)return;let i=0;tune=setInterval
 // --- UPDATED TEXT-TO-SPEECH SAY FUNCTION ---
 function say(w) {
     toast('🔊 “' + w + '”');
-    const audioUrl = `http://127.0.0.1:8000/api/tts?word=${encodeURIComponent(w)}`;
+    const audioUrl = `https://microwide-kids-app.onrender.com/api/tts?word=${encodeURIComponent(w)}`;
     const player = new Audio(audioUrl);
     
     player.play().catch(e => {
