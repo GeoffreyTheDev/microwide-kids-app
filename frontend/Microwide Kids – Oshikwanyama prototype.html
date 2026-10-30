@@ -191,7 +191,7 @@ function say(w) {
 
 async function loadGameData() {
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/vocabulary');
+        const response = await fetch('https://microwide-kids-app.onrender.com/api/vocabulary');
         V = await response.json();
         
         // Define the lesson groups AFTER V has been fully populated by the backend
@@ -302,7 +302,7 @@ function renderHome(){
             owlFace.innerHTML = "🧐";
             
             try {
-                const res = await fetch('http://127.0.0.1:8000/api/ai-tutor', {
+                const res = await fetch('https://microwide-kids-app.onrender.com/api/ai-tutor', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -313,7 +313,7 @@ function renderHome(){
                     })
                 });
                 const data = await res.json();
-                owlFace.innerHTML = "✨";
+                owlFace.innerHTML = "🦉";
                 history.innerHTML += `<div style="margin-bottom: 8px; color: #1e293b;"><b>Kulu:</b> ${data.reply}</div>`;
                 history.scrollTop = history.scrollHeight;
             } catch (err) {
@@ -330,7 +330,7 @@ function renderHome(){
 
     $('#storyModeBtn').onclick = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/stories');
+            const response = await fetch('https://microwide-kids-app.onrender.com/api/stories');
             const stories = await response.json();
             
             const renderStoryMenu = () => {
@@ -339,7 +339,7 @@ function renderHome(){
                 stories.forEach((story, index) => {
                     html += `
                     <div class="card" style="margin-bottom: 15px; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 15px;" id="storyBtn_${index}">
-                        <img src="http://127.0.0.1:8000/images/${story.cover}" style="width: 80px; height: 80px; border-radius: 10px; object-fit: cover;">
+                        <img src="https://microwide-kids-app.onrender.com/images/${story.cover}" style="width: 80px; height: 80px; border-radius: 10px; object-fit: cover;">
                         <div>
                             <b style="font-size: 20px; color: var(--blue);">${story.title}</b><br>
                             <span style="font-size: 14px; color: var(--text); font-weight: bold;">${story.pages.length} Pages</span>
@@ -361,7 +361,7 @@ function renderHome(){
                     const page = selectedStory.pages[currentPage];
                     let html = `
                         <div style="text-align:center; padding: 10px 20px;">
-                            <img src="http://127.0.0.1:8000/images/${page.img}" 
+                            <img src="https://microwide-kids-app.onrender.com/images/${page.img}" 
                                  style="width: 100%; height: 280px; object-fit: cover; border-radius: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.15); animation: bob 3s ease-in-out infinite;">
                             
                             <h2 style="font-size: 26px; color: var(--blue); margin-top: 24px; line-height: 1.3;">${page.kwy}</h2>
