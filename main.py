@@ -5,6 +5,8 @@ from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+import os
+import google.generativeai as genai
 
 # 1. Initialize the app FIRST
 app = FastAPI()
@@ -45,15 +47,33 @@ def get_stories():
 
 @app.post("/api/ai-tutor")
 def ai_tutor_chat(request: ChatRequest):
-    """Handles Kulu the Owl's chat responses"""
-    # Simple fallback logic for the prototype
-    word = request.current_word
-    question = request.child_question.lower()
+    """Handles Kulu the Owl's chat responses using Gemini AI"""
     
-    if "hint" in question:
-        reply = f"A great hint for {word} is to think about nature! 🌿"
-    else:
-        reply = f"That is a great question, {request.child_name}! Keep practicing your Oshikwanyama."
+    # Pulls your secret API key safely from Render's environment
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        return {"reply": "Hoot! My API key is missing. Please add it to Render!"}
+        
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    
+    prompt = f"""
+    You are Kulu ka Hafa, a wise, friendly, and encouraging owl who tutors children in the Oshikwanyama language.
+    The child's name is {request.child_name}, age {request.age}.
+    They are asking: "{request.child_question}"
+    
+    Rules for your response:
+    1. Keep it short, simple, and enthusiastic (1 to 3 sentences max).
+    2. Answer their question accurately.
+    3. If they ask how to say something, provide the Oshikwanyama translation and briefly explain how to pronounce it.
+    """
+    
+    try:
+        response = model.generate_content(prompt)
+        reply = response.text.strip()
+    except Exception as e:
+        print("AI Error:", e)
+        reply = f"Hoot! My magical AI brain is resting, {request.child_name}. Try asking again! 🦉"
         
     return {"reply": reply}
 
