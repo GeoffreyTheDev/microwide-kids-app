@@ -55,7 +55,7 @@ def ai_tutor_chat(request: ChatRequest):
         return {"reply": "Hoot! My API key is missing. Please add it to Render!"}
         
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-2.5-flash')
     
     prompt = f"""
     You are Kulu ka Hafa, a wise, friendly, and encouraging owl who tutors children in the Oshikwanyama language.
